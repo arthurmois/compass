@@ -102,13 +102,13 @@ const Menu: React.FC<unknown> = () => {
                     draggable={false}
                     title="Logo"
                   />
-                  Geist
+                  Compass
                 </a>
               </NextLink>
             </div>
 
             <div className="tabs">
-              <Tabs
+              {/* <Tabs
                 value={currentUrlTabValue}
                 leftSpace={0}
                 activeClassName="current"
@@ -125,7 +125,7 @@ const Menu: React.FC<unknown> = () => {
                     key={`${tab.localeName || tab.name}-${index}`}
                   />
                 ))}
-              </Tabs>
+              </Tabs> */}
             </div>
 
             <div className="controls">
