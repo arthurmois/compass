@@ -1,15 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import { useTheme, Grid, Input } from 'components'
 import { Button, Card, Modal, Page, Spacer, Text } from '@geist-ui/core'
+import { ReactComponent as RobotIcon } from 'public/images/robot-icon.svg'
 import {
   AlignJustify,
+  ArrowDown,
+  ChevronDown,
   CornerDownRight,
   Filter,
   Plus,
   Search,
   Settings,
   ThumbsUp,
+  Trash,
 } from '@geist-ui/icons'
 import data from './data/data.json'
 
@@ -19,6 +23,7 @@ const Application: NextPage<{}> = () => {
   const [deleteAllModal, setDeleteAllModal] = React.useState(false)
   const [selectedCluster, setSelectedCluster] = useState(0)
   const [searchCommentsValue, setSearchCommentsValue] = useState('')
+  const [openReplyDialog, setOpenReplyDialog] = useState('')
 
   const selectClusterHandler = (clusterId: number) => {
     setSelectedCluster(clusterId)
@@ -33,11 +38,28 @@ const Application: NextPage<{}> = () => {
     console.log(e.target.value)
   }
 
+  fetch('http://your-api-url.com/generate_embedding_from_url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ url: 'http://example.com' }), // Replace with the desired URL to generate an embedding from
+  })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response data
+      console.log(data);
+    })
+    .catch(error => {
+      // Handle any errors
+      console.error(error);
+    });
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <Card
         style={{
-          flex: 0.5,
+          flex: 0.4,
           overflowY: 'hidden',
         }}
       />
@@ -130,6 +152,17 @@ const Application: NextPage<{}> = () => {
               return (
                 <Grid xs={24} style={{ display: 'flex' }}>
                   <Card style={{ width: '100%', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <div style={{ cursor: 'pointer' }}>
+                        <Trash
+                          color="red"
+                          onClick={() => {
+                            console.log('remove comment')
+                          }}
+                        />
+                      </div>
+                    </div>
+
                     <Text>
                       <Text small>UserName</Text>
                       <Text small style={{ color: 'grey' }}>
@@ -137,15 +170,71 @@ const Application: NextPage<{}> = () => {
                       </Text>
                     </Text>
                     <Text>{commentObj.Comment}</Text>
-                    <div style={{ alignItems: 'center', display: 'flex' }}>
-                      <ThumbsUp />
-                      <Spacer w={0.5} />
-                      {commentObj.Likes}
-                      <Spacer w={1} />
-                      <Button icon={<CornerDownRight />} type={'abort'} width={0.6}>
-                        Reply
-                      </Button>
-                    </div>
+                    <Grid xs={24}>
+                      <div style={{ alignItems: 'center', display: 'flex' }}>
+                        <ThumbsUp />
+                        <Spacer w={0.5} />
+                        {commentObj.Likes}
+                        <Spacer w={1} />
+                        <Button
+                          icon={<CornerDownRight />}
+                          type={'abort'}
+                          width={0.6}
+                          onClick={() => setOpenReplyDialog(commentObj.CommentID)}>
+                          Reply
+                        </Button>
+                      </div>
+                    </Grid>
+
+                    {commentObj.CommentID === openReplyDialog ? (
+                      <Grid.Container gap={2} justify="center">
+                        <Grid
+                          xs={20}
+                          style={{ justifyContent: 'center', alignItems: 'center' }}>
+                          <Input
+                            font="1.125rem"
+                            py={0.75}
+                            w="100%"
+                            // value={searchCommentsValue}
+                            placeholder="Reply"
+                            className="search-input"></Input>
+                          <Grid
+                            xs={4}
+                            style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Button w={0.1} onClick={() => setOpenReplyDialog('')}>
+                              {/* <RobotIcon/> */}
+                            </Button>
+                          </Grid>
+                          <Grid
+                            xs={4}
+                            style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Button w={0.4} onClick={() => setOpenReplyDialog('')}>
+                              Cancel
+                            </Button>
+                          </Grid>
+                          <Grid
+                            xs={4}
+                            style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Button w={0.4} type="secondary-light">
+                              Reply
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid.Container>
+                    ) : null}
+                    <Grid xs={24}>
+                      <div style={{ alignItems: 'center', display: 'flex' }}>
+                        <Button
+                          icon={<ChevronDown />}
+                          type={'abort'}
+                          w={0.9}
+                          onClick={() => {
+                            console.log('opens thread')
+                          }}>
+                          <Text>{commentObj.Likes} Replies</Text>
+                        </Button>
+                      </div>
+                    </Grid>
                   </Card>
                 </Grid>
               )
@@ -154,7 +243,7 @@ const Application: NextPage<{}> = () => {
       </Card>
       <Card
         style={{
-          flex: 0.5,
+          flex: 0.4,
           overflowY: 'hidden',
         }}
       />

@@ -44,7 +44,7 @@ const Application: NextPage<{}> = () => {
           </Button>
         </div>
 
-        <Grid.Container gap={2} justify="center">
+        {/* <Grid.Container gap={2} justify="center">
           <Grid xs={24} md={8}>
             <HomeCell
               icon={<PackageIcon />}
@@ -95,8 +95,8 @@ const Application: NextPage<{}> = () => {
               desc="Geist is open sourced and available free under MIT licence."
             />
           </Grid>
-        </Grid.Container>
-        <Grid.Container gap={2} justify="center">
+        </Grid.Container> */}
+        {/* <Grid.Container gap={2} justify="center">
           <Grid xs={24} md={8}>
             <HomeCell
               icon={<PackageIcon />}
@@ -121,7 +121,7 @@ const Application: NextPage<{}> = () => {
               desc="Geist is open sourced and available free under MIT licence."
             />
           </Grid>
-        </Grid.Container>
+        </Grid.Container> */}
       </div>
       <style jsx>{`
         .layout {
